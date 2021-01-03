@@ -1,4 +1,3 @@
-app.listen(process.env.PORT || 3000)
 import express from 'express';
 import bodyParser from 'body-parser';
 import appSrc from './app.js';
