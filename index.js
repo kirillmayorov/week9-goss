@@ -10,4 +10,4 @@ import path from 'path';
 
 import appSrc from './app.js';
 const app = appSrc(express, bodyParser, createReadStream, crypto, http, mongodb, Zombie, cors, path);
-app.listen(process.env.PORT || 3000);
+app.listen(process.env.PORT || 3400);
