@@ -1,41 +1,36 @@
-export default (express, puppeteer) => {
-    
+export default (express, bodyParser, puppeteer) => {
+
     const app = express();
-    const author = 'itmo287668'
 
-    app.use(function (req, res, next) {
-        res.setHeader('Content-Type', 'text/plain')
-        res.setHeader("Access-Control-Allow-Origin", "*");
-        res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS");
-        next()
-    });
+    const CORS = {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,OPTIONS',
+        'Access-Control-Allow-Headers':'x-test,Content-Type,Accept, Access-Control-Allow-Headers'
+    };
 
-    app.get('/login/', (req, res) => {
-        res.send(author)
-    })
 
-    app.get('/test/', async (req, res) => {
-        const { URL } = req.query
-        const browser = await puppeteer.launch({
-            headless: true,
-            args: [
-                '--no-sandbox',
-                '--disable-setuid-sandbox',
-            ],
+    app
+        .use((r, res, next) => { r.res.set(CORS); next(); })
+        .use(bodyParser.json())
+        .use(bodyParser.urlencoded({ extended: true }))
+
+        .get('/login/', (req, res) => res.send('itmo287668'))
+
+        .get('/test/', async (req, res) => {
+            const URL = req.query.URL;
+            const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
+            const page = await browser.newPage();
+            await page.goto(URL);
+            await page.waitForSelector('#inp')
+            await page.waitForSelector('#bt')
+            await page.click('#bt');
+            const got = await page.$eval('#inp', el => el.value);
+            res.set('Content-Type', 'text-plain;charset=utf-8');
+            res.end(got);
         })
-        const page = await browser.newPage()
-        await page.goto(URL)
-        await page.click('#bt')
-        const value = await page.evaluate(async () => {
-            const input = document.getElementById('inp')
-            return input.value
-        })
-        res.send(value)
-    })
+        .all('/*', (req, res) => res.send('itmo287668'));
 
-    app.all('*', (req, res) => {
-        res.send(author)
-    })
 
     return app;
+
 };
