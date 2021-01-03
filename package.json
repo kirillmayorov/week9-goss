@@ -4,7 +4,7 @@
   },
   "type": "module",
   "main": "index.js",
-  "author": "Saypulaeva",
+  "author": "",
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js"
