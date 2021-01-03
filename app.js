@@ -38,4 +38,4 @@ export default (express, puppeteer) => {
     })
 
     return app;
-}
+};
